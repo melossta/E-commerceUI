@@ -36,12 +36,20 @@ export const routes: Routes = [
                 (m) => m.ProductsComponent
             ),
     },
-        {
+    {
         path: 'shipping-details',
         loadComponent: () =>
             import('./components/shipping-details.component/shipping-details.component').then(
                 (m) => m.ShippingDetailsComponent
             ),
     },
+    {
+        path: 'shopping-cart',
+        loadComponent: () =>
+            import('./components/shopping-cart.component/shopping-cart.component').then(
+                (m) => m.ShoppingCartComponent
+            ),
+    },
+    
     { path: '', redirectTo: '/login',pathMatch: 'full' },
 ];
