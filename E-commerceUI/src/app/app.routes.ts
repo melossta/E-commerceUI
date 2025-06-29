@@ -50,6 +50,13 @@ export const routes: Routes = [
                 (m) => m.ShoppingCartComponent
             ),
     },
-    
-    { path: '', redirectTo: '/login',pathMatch: 'full' },
+        {
+        path: 'authentication',
+        loadComponent: () =>
+            import('./components/auth/auth.component').then(
+                (m) => m.AuthComponent
+            ),
+    },
+
+    { path: '', redirectTo: '/authentication',pathMatch: 'full' },
 ];

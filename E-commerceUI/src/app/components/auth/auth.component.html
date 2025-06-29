@@ -1,0 +1,29 @@
+
+<div class="auth-wrapper">
+    <div class="form-structor">
+    <div class="signup" [ngClass]="{'slide-up': isLogin}">
+        <h2 class="form-title" id="signup" (click)="toggleForm()"><span>or</span>Sign up</h2>
+        <div class="form-holder">
+        <input type="text" class="input" placeholder="Name" [(ngModel)]="registerName" />
+        <input type="email" class="input" placeholder="Email" [(ngModel)]="registerEmail" />
+        <input type="password" class="input" placeholder="Password" [(ngModel)]="registerPassword" />
+        <select [(ngModel)]="registerRole" class="input">
+            <option value="admin">Admin</option>
+            <option value="customer">Customer</option>
+        </select>
+        </div>
+        <button class="submit-btn" (click)="register()">Sign up</button>
+    </div>
+
+    <div class="login" [ngClass]="{'slide-up': !isLogin}">
+        <div class="center">
+        <h2 class="form-title" id="login" (click)="toggleForm()"><span>or</span>Log in</h2>
+        <div class="form-holder">
+            <input type="email" class="input" placeholder="Email" [(ngModel)]="loginEmail" />
+            <input type="password" class="input" placeholder="Password" [(ngModel)]="loginPassword" />
+        </div>
+        <button class="submit-btn" (click)="login()">Log in</button>
+        </div>
+    </div>
+    </div>
+</div>

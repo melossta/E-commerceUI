@@ -49,7 +49,7 @@ decodeToken(): any | null {
   logout(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('role');
-    this.router.navigate(['/login']); // redirect to login page after logout
+    this.router.navigate(['/authentication']); 
   }
   
 }

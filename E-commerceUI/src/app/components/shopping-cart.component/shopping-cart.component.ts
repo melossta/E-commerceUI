@@ -9,6 +9,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth-service';
+import { ProductsService,Product} from '../../services/products.service';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -25,72 +26,105 @@ export class ShoppingCartComponent implements OnInit {
   cartItems: CartItem[] = [];
   displayedColumns = ['productName', 'quantity', 'actions'];
   dataSource = new MatTableDataSource<CartItem>();
+  
+  products: Product[] = [];
+  showProducts = false;
+  quantities: { [key: number]: number } = {};
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private ShoppingCartService: ShoppingCartService , private authService: AuthService) { }
+  constructor(private shoppingCartService: ShoppingCartService , private authService: AuthService , private productsService: ProductsService) { }
 
   ngOnInit(): void { }
 
-  loadCart() {
-    if (this.userId === null) {
-      alert('Please enter a user ID.');
-      return;
-    }
-
-    this.ShoppingCartService.getCartByUserId(this.userId).subscribe({
-      next: (cart) => {
-        this.cartItems = cart.cartItems;
-        this.dataSource.data = this.cartItems;
-        this.dataSource.paginator = this.paginator;
-      },
-      error: (err) => {
-        alert('Error loading cart.');
-        console.error(err);
-      }
-    });
-  }
-
-  // addToCart() {
-  //   if (this.productId === null || this.quantity === null) {
-  //     alert('All fields are required.');
+  // loadCart() {
+  //   if (this.userId === null) {
+  //     alert('Please enter a user ID.');
   //     return;
   //   }
+  //   if (this.userId)
 
-  //   this.ShoppingCartService.addToCart(this.productId, this.quantity).subscribe({
-  //     next: () => {
-  //       alert('Product added to cart.');
-  //       this.loadCart();
+  //   this.shoppingCartService.getCartByUserId(this.userId).subscribe({
+  //     next: (cart) => {
+  //       this.cartItems = cart.cartItems;
+  //       this.dataSource.data = this.cartItems;
+  //       this.dataSource.paginator = this.paginator;
   //     },
   //     error: (err) => {
-  //       alert('Error adding product to cart.');
+  //       alert('Error loading cart.');
   //       console.error(err);
   //     }
   //   });
   // }
-  addToCart() {
-  if (this.productId === null || this.quantity === null || this.quantity <= 0) {
-    alert('All fields are required and quantity must be greater than zero.');
+  loadCart() {
+  if (this.userId === null || this.userId === undefined) {
+    alert('Please enter a user ID.');
     return;
   }
 
-  this.ShoppingCartService.addToCart(this.productId, this.quantity).subscribe({
-    next: () => {
-      alert('Product added to cart.');
-      this.loadCart();
+  this.shoppingCartService.getCartByUserId(this.userId).subscribe({
+    next: (cart) => {
+      this.cartItems = cart.cartItems;
+      this.dataSource.data = this.cartItems;
+      this.dataSource.paginator = this.paginator;
     },
     error: (err) => {
-      alert('Error adding product to cart.');
+      if (err.status === 404) {
+        alert(err.error); // this will show "User not found" or "Cart not found"
+      } else {
+        alert('An unexpected error occurred.');
+      }
       console.error(err);
     }
   });
 }
 
+toggleShowProducts() {
+    this.showProducts = !this.showProducts;
+
+    if (this.showProducts && this.products.length === 0) {
+      this.loadProducts();
+    }
+  }
+
+  loadProducts() {
+    this.productsService.getAllProducts().subscribe({
+      next: (data) => {
+        this.products = data;
+        // Initialize all quantities to 1
+        this.products.forEach(p => this.quantities[p.productId] = 1);
+      },
+      error: (err) => {
+        alert('Error loading products');
+        console.error(err);
+      }
+    });
+  }
+
+  addToCart(productId: number) {
+    const quantity = this.quantities[productId];
+    if (!quantity || quantity <= 0) {
+      alert('Quantity must be greater than zero.');
+      return;
+    }
+
+    this.shoppingCartService.addToCart(productId, quantity).subscribe({
+      next: () => {
+        alert(`Added product ${productId} with quantity ${quantity} to cart.`);
+      },
+      error: (err) => {
+        alert('Error adding product to cart.');
+        console.error(err);
+      }
+    });
+  }
+  
+
 
   removeFromCart(cartItemId: number) {
     if (!confirm('Are you sure you want to remove this item?')) return;
 
-    this.ShoppingCartService.removeFromCart(cartItemId).subscribe({
+    this.shoppingCartService.removeFromCart(cartItemId).subscribe({
       next: () => {
         alert('Item removed from cart.');
         this.loadCart();
@@ -110,7 +144,7 @@ export class ShoppingCartComponent implements OnInit {
 
     if (!confirm('Are you sure you want to clear the cart?')) return;
 
-    this.ShoppingCartService.clearCart(this.userId).subscribe({
+    this.shoppingCartService.clearCart(this.userId).subscribe({
       next: () => {
         alert('Cart cleared.');
         this.cartItems = [];
