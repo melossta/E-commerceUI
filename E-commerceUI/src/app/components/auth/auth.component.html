@@ -7,10 +7,18 @@
         <input type="text" class="input" placeholder="Name" [(ngModel)]="registerName" />
         <input type="email" class="input" placeholder="Email" [(ngModel)]="registerEmail" />
         <input type="password" class="input" placeholder="Password" [(ngModel)]="registerPassword" />
-        <select [(ngModel)]="registerRole" class="input">
+        <!-- <select [(ngModel)]="registerRole" class="input">
             <option value="admin">Admin</option>
             <option value="customer">Customer</option>
-        </select>
+        </select> -->
+        <mat-form-field class="vibe-select" appearance="fill">
+        <mat-select [(ngModel)]="registerRole" disableRipple>
+            <mat-option value="admin">Admin</mat-option>
+            <mat-option value="customer">Customer</mat-option>
+        </mat-select>
+        </mat-form-field>
+
+
         </div>
         <button class="submit-btn" (click)="register()">Sign up</button>
     </div>
@@ -26,4 +34,5 @@
         </div>
     </div>
     </div>
+    
 </div>

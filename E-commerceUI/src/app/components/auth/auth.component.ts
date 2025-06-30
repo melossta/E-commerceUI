@@ -3,11 +3,13 @@ import { AuthService } from '../../services/auth-service';
 import { Router } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { FormsModule} from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss'],
-  imports: [NgClass, FormsModule],
+  imports: [NgClass, FormsModule, MatFormFieldModule, MatSelectModule],
   standalone: true
 })
 export class AuthComponent {
