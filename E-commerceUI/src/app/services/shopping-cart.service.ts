@@ -22,9 +22,7 @@ export class ShoppingCartService {
     return this.http.get<any>(`${this.apiUrl}/${userId}`);
   }
 
-  // addToCart( productId: number, quantity: number): Observable<any> {
-  //   return this.http.post(`${this.apiUrl}/add`, { productId, quantity });
-  // }
+
 addToCart(productId: number, quantity: number): Observable<any> {
   return this.http.post(`${this.apiUrl}/add`, { productId, quantity });
 }

@@ -111,4 +111,7 @@ export class CategoryComponent implements OnInit {
   goToShoppingCart() {
     window.location.href = '/shopping-cart'; // Redirect to shopping cart page
   }
+  goToOrder() {
+    window.location.href = '/order'; // Redirect to order page
+  }
 }

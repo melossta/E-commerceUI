@@ -31,16 +31,35 @@ export class AuthComponent {
     this.isLogin = !this.isLogin;
   }
 
-  login(): void {
-    this.authService.login(this.loginEmail, this.loginPassword).subscribe({
-      next: (response) => {
-        localStorage.setItem('authToken', response.token);
-        localStorage.setItem('role', response.roles[0]);
-        this.router.navigate(['/categories']);
-        alert('Logged in successfully');
+  // login(): void {
+  //   this.authService.login(this.loginEmail, this.loginPassword).subscribe({
+  //     next: (response) => {
+  //       localStorage.setItem('authToken', response.token);
+  //       localStorage.setItem('role', response.roles[0]);
+  //       this.router.navigate(['/categories']);
+  //       alert('Logged in successfully');
+  //     },
+  //     error: () => alert('Invalid email or password.')
+  //   });
+  // }
+    login(): void {
+    this.authService.login(this.loginEmail, this.loginPassword).subscribe(
+      (response) => {
+        const token = response.token;
+        const role = response.roles[0]; 
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('role', role); // Save userId as a string    
+
+        this.authService.decodeToken();
+        alert(`Successfully logged in as ${role}.`);
+        this.router.navigate(['/categories']); // Redirect to home page or dashboard
       },
-      error: () => alert('Invalid email or password.')
-    });
+      (error) => {
+        
+        // this.errorMessage = 'Invalid email or password. Please try again.';
+        alert('Invalid email or password. Please try again.')
+      }
+    );
   }
 
   register(): void {

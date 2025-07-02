@@ -160,4 +160,7 @@ toggleShowProducts() {
     this.authService.logout();
     alert('You have been logged out.');
   }
+    goToOrder() {
+    window.location.href = '/order'; // Redirect to order page
+  }
 }

@@ -40,7 +40,7 @@ decodeToken(): any | null {
     console.error('Error decoding token', error);
     return null;
   }
-}
+} 
 
   getToken(): string | null {
     return localStorage.getItem('authToken');

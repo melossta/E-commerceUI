@@ -1,0 +1,40 @@
+<div class="order-container" style="padding: 24px; max-width: 700px; margin: auto;">
+  <h2>📦 Place Your Order</h2>
+
+  <mat-card *ngIf="shippingDetails.length > 0" class="shipping-card" style="margin-top: 20px;">
+  <mat-card-title>Select Shipping Address</mat-card-title>
+  <mat-radio-group [(ngModel)]="selectedShippingId">
+    <mat-radio-button *ngFor="let detail of shippingDetails" [value]="detail.shippingDetailsId" style="display: block; margin: 8px 0;">
+      {{ detail.address }}, {{ detail.city }}, {{ detail.country }} - {{ detail.postalCode }}
+      <div class="phone" style="font-size: 12px; color: #666;">📞 {{ detail.phoneNumber }}</div>
+    </mat-radio-button>
+  </mat-radio-group>
+</mat-card>
+
+  <!-- No shipping details -->
+  <mat-card *ngIf="shippingDetails.length === 0" style="margin-top: 20px;">
+    <mat-card-content>
+      <p>No shipping addresses found. Please add one before placing an order.</p>
+    </mat-card-content>
+  </mat-card>
+
+
+  
+  <!-- Place Order Button -->
+  <div style="margin-top: 30px; text-align: center;">
+    <button mat-raised-button color="primary" (click)="placeOrder()" [disabled]="!selectedShippingId || isLoading">
+      {{ isLoading ? 'Placing Order...' : 'Place Order' }}
+    </button>
+  </div>
+
+  <!-- Order result -->
+  <mat-card *ngIf="orderResult" style="margin-top: 30px; background-color: #f1f8e9;">
+    <mat-card-title>✅ Order Placed Successfully</mat-card-title>
+    <mat-card-content>
+      <p><strong>Order ID:</strong> {{ orderResult.orderId }}</p>
+      <p><strong>Status:</strong> {{ orderResult.status }}</p>
+      <p><strong>Total:</strong> {{ orderResult.totalAmount | currency }}</p>
+      <p><strong>Date:</strong> {{ orderResult.orderDate | date: 'short' }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>

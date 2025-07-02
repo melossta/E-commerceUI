@@ -57,6 +57,13 @@ export const routes: Routes = [
                 (m) => m.AuthComponent
             ),
     },
+            {
+        path: 'order',
+        loadComponent: () =>
+            import('./components/order.component/order.component').then(
+                (m) => m.OrderComponent
+            ),
+    },
 
     { path: '', redirectTo: '/authentication',pathMatch: 'full' },
 ];
