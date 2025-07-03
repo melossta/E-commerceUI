@@ -58,14 +58,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment/environment.component';
+import { Order,SingleOrder } from '../interfaces/order.interface'; // Assuming you have this interface defined
 
-export interface Order {
-  orderId: number;
-  orderDate: string;
-  status: string;
-  totalAmount: number;
-  shippingDetailsId: number;
-}
+
 
 
 @Injectable({
@@ -81,9 +76,12 @@ export class OrderService {
   }
 
 
-  placeSingleProductOrder(productId: number, quantity: number, shippingDetailsId: number): Observable<Order> {
-    return this.http.post<Order>(`${this.apiUrl}/place-single`, { productId, quantity, shippingDetailsId });
-  }
+  // placeSingleProductOrder(productId: number, quantity: number, shippingDetailsId: number): Observable<Order> {
+  //   return this.http.post<Order>(`${this.apiUrl}/place-single`, { productId, quantity, shippingDetailsId });
+  // }
+      placeSingleProductOrder(singleOrderData: SingleOrder): Observable<Order> {
+        return this.http.post<Order>(`${this.apiUrl}/place-single`, singleOrderData);
+    }
 
   getOrderById(orderId: number): Observable<Order> {
     return this.http.get<Order>(`${this.apiUrl}/${orderId}`);

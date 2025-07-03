@@ -1,15 +1,89 @@
+<!-- <div class="order-container" style="padding: 24px; max-width: 700px; margin: auto;">
+  <h2>📦 Place Your Order</h2>
+
+  <div *ngIf="shippingDetails.length > 0" class="shipping-card" style="margin-top: 20px; border: 1px solid #ccc; padding: 16px; border-radius: 8px;">
+    <h3>Select Shipping Address</h3>
+    <div *ngFor="let detail of shippingDetails" style="margin: 10px 0;">
+      <label>
+        <input type="radio" name="shipping" [value]="detail.shippingDetailsId" [(ngModel)]="selectedShippingId">
+        {{ detail.address }}, {{ detail.city }}, {{ detail.country }} - {{ detail.postalCode }}
+        <div style="font-size: 12px; color: #666;">📞 {{ detail.phoneNumber }}</div>
+      </label>
+    </div>
+  </div>
+
+
+  <div *ngIf="shippingDetails.length === 0" style="margin-top: 20px; border: 1px solid #f44336; padding: 16px; border-radius: 8px; background-color: #ffe5e5;">
+    <p>No shipping addresses found. Please add one before placing an order.</p>
+  </div>
+
+
+  <div style="margin-top: 30px; border: 1px solid #ccc; padding: 16px; border-radius: 8px;">
+    <h3>🛒 Place Single Product Order</h3>
+
+
+    <div style="margin-bottom: 16px;">
+      <label for="product">Select Product:</label>
+      <select id="product" [(ngModel)]="singleOrder.productId">
+        <option [ngValue]="null" disabled selected>Select a product</option>
+        <option *ngFor="let product of products" [value]="product.productId">
+          {{ product.name }} - {{ product.price | currency }}
+        </option>
+      </select>
+    </div>
+
+
+    <div style="margin-bottom: 16px;">
+      <label for="quantity">Quantity:</label>
+      <input id="quantity" type="number" min="1" [(ngModel)]="singleOrder.quantity">
+    </div>
+
+
+    <div style="margin-bottom: 16px; font-size: 13px;">
+      <small>Shipping address selected above will be used.</small>
+    </div>
+
+
+    <button 
+      (click)="singleOrder.shippingDetailsId = selectedShippingId; placeSingleOrder()"
+      [disabled]="!singleOrder.productId || !selectedShippingId || isLoading">
+      {{ isLoading ? 'Placing...' : 'Place Single Order' }}
+    </button>
+  </div>
+
+
+  <div style="margin-top: 30px; text-align: center;">
+    <button (click)="placeOrder()" [disabled]="!selectedShippingId || isLoading">
+      {{ isLoading ? 'Placing Order...' : 'Place Order' }}
+    </button>
+  </div>
+
+
+  <div *ngIf="orderResult" style="margin-top: 30px; padding: 20px; background-color: #f1f8e9; border-radius: 8px;">
+    <h3>✅ Order Placed Successfully</h3>
+    <p><strong>Order ID:</strong> {{ orderResult.orderId }}</p>
+    <p><strong>Status:</strong> {{ orderResult.status }}</p>
+    <p><strong>Total:</strong> {{ orderResult.totalAmount | currency }}</p>
+    <p><strong>Date:</strong> {{ orderResult.orderDate | date: 'short' }}</p>
+  </div>
+</div> -->
+
+
 <div class="order-container" style="padding: 24px; max-width: 700px; margin: auto;">
   <h2>📦 Place Your Order</h2>
 
+  <!-- Shipping Address -->
   <mat-card *ngIf="shippingDetails.length > 0" class="shipping-card" style="margin-top: 20px;">
-  <mat-card-title>Select Shipping Address</mat-card-title>
-  <mat-radio-group [(ngModel)]="selectedShippingId">
-    <mat-radio-button *ngFor="let detail of shippingDetails" [value]="detail.shippingDetailsId" style="display: block; margin: 8px 0;">
-      {{ detail.address }}, {{ detail.city }}, {{ detail.country }} - {{ detail.postalCode }}
-      <div class="phone" style="font-size: 12px; color: #666;">📞 {{ detail.phoneNumber }}</div>
-    </mat-radio-button>
-  </mat-radio-group>
-</mat-card>
+    <mat-card-title>Select Shipping Address</mat-card-title>
+    <mat-card-content>
+      <mat-radio-group [(ngModel)]="selectedShippingId">
+        <mat-radio-button *ngFor="let detail of shippingDetails" [value]="detail.shippingDetailsId" style="display: block; margin: 8px 0;">
+          {{ detail.address }}, {{ detail.city }}, {{ detail.country }} - {{ detail.postalCode }}
+          <div style="font-size: 12px; color: #666;">📞 {{ detail.phoneNumber }}</div>
+        </mat-radio-button>
+      </mat-radio-group>
+    </mat-card-content>
+  </mat-card>
 
   <!-- No shipping details -->
   <mat-card *ngIf="shippingDetails.length === 0" style="margin-top: 20px;">
@@ -18,9 +92,44 @@
     </mat-card-content>
   </mat-card>
 
+  <!-- Single Product Order -->
+  <mat-card style="margin-top: 30px;">
+    <mat-card-title>🛒 Place Single Product Order</mat-card-title>
+    <mat-card-content>
 
-  
-  <!-- Place Order Button -->
+      <!-- Product Dropdown -->
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Select Product</mat-label>
+        <mat-select [(ngModel)]="singleOrder.productId">
+          <mat-option [value]="null" disabled>Select a product</mat-option>
+          <mat-option *ngFor="let product of products" [value]="product.productId">
+            {{ product.name }} - {{ product.price | currency }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Quantity -->
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Quantity</mat-label>
+        <input matInput type="number" min="1" [(ngModel)]="singleOrder.quantity">
+      </mat-form-field>
+
+      <!-- Shipping note -->
+      <div style="margin-bottom: 12px; font-size: 13px;">
+        <small>Shipping address selected above will be used.</small>
+      </div>
+
+      <!-- Place Single Order Button -->
+      <button mat-raised-button color="accent"
+              (click)="singleOrder.shippingDetailsId = selectedShippingId; placeSingleOrder()"
+              [disabled]="!singleOrder.productId || !selectedShippingId || isLoading">
+        {{ isLoading ? 'Placing...' : 'Place Single Order' }}
+      </button>
+
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Place Cart Order Button -->
   <div style="margin-top: 30px; text-align: center;">
     <button mat-raised-button color="primary" (click)="placeOrder()" [disabled]="!selectedShippingId || isLoading">
       {{ isLoading ? 'Placing Order...' : 'Place Order' }}
