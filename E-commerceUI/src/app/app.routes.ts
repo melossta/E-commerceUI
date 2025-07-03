@@ -64,6 +64,18 @@ export const routes: Routes = [
                 (m) => m.OrderComponent
             ),
     },
+                {
+        path: 'product-list',
+        loadComponent: () =>
+            import('./components/product-list.component/product-list.component').then(
+                (m) => m.ProductListComponent
+            ),
+    },
+    {
+        path: 'product/:id',
+        loadComponent: () =>
+            import('./components/product-detail.component/product-detail.component').then(m => m.ProductDetailComponent)
+    },
 
     { path: '', redirectTo: '/authentication',pathMatch: 'full' },
 ];

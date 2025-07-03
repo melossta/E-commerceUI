@@ -37,25 +37,6 @@ export class ShoppingCartComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  // loadCart() {
-  //   if (this.userId === null) {
-  //     alert('Please enter a user ID.');
-  //     return;
-  //   }
-  //   if (this.userId)
-
-  //   this.shoppingCartService.getCartByUserId(this.userId).subscribe({
-  //     next: (cart) => {
-  //       this.cartItems = cart.cartItems;
-  //       this.dataSource.data = this.cartItems;
-  //       this.dataSource.paginator = this.paginator;
-  //     },
-  //     error: (err) => {
-  //       alert('Error loading cart.');
-  //       console.error(err);
-  //     }
-  //   });
-  // }
   loadCart() {
   if (this.userId === null || this.userId === undefined) {
     alert('Please enter a user ID.');
