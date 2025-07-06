@@ -12,10 +12,12 @@ import { MatTableModule } from '@angular/material/table'; // New Import
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { ViewChild, AfterViewInit } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator'; // New Import
 @Component({
   selector: 'app-products.component',
-  imports: [FormsModule, CommonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule,MatSelectModule],
+  imports: [FormsModule, CommonModule, MatCardModule,MatIconModule,MatCheckboxModule, MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule,MatSelectModule],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
 })
@@ -28,6 +30,9 @@ export class ProductsComponent implements OnInit , AfterViewInit {
   categoryId: number | null = null;
   editingProductId: number | null = null;
   categories: any[] = [];
+  productImages: { imageUrl: string; sortOrder: number; isPrimary: boolean }[] = [
+  { imageUrl: '', sortOrder: 1, isPrimary: true }
+  ];
 
    displayedColumns = ['name', 'description', 'price', 'stockQuantity', 'categoryId', 'actions'];
 dataSource = new MatTableDataSource<any>();
@@ -84,13 +89,22 @@ loadCategories() {
       return;
     }
 
+    // const newProduct = {
+    //   name: this.name,
+    //   description: this.description,
+    //   price: this.price,
+    //   stockQuantity: this.stockQuantity,
+    //   categoryId: this.categoryId
+    // };
     const newProduct = {
       name: this.name,
       description: this.description,
       price: this.price,
       stockQuantity: this.stockQuantity,
-      categoryId: this.categoryId
+      categoryId: this.categoryId,
+      productImages: this.productImages
     };
+
 
     this.productsService.addProduct(newProduct).subscribe({
       next: () => {
@@ -118,13 +132,55 @@ loadCategories() {
       });
     }
   } 
-  resetForm() {
-    this.name = ''; 
-    this.description = '';
-    this.price = null;
-    this.stockQuantity = null;
-    this.categoryId = null;
+
+
+
+  addImage() {
+  this.productImages.push({ imageUrl: '', sortOrder: this.getNextSortOrder(), isPrimary: false });
+}
+
+removeImage(index: number) {
+  this.productImages.splice(index, 1);
+}
+
+getNextSortOrder(): number {
+  const sortOrders = this.productImages.map(img => img.sortOrder || 0);
+  return Math.max(0, ...sortOrders) + 1;
+}
+
+validateSortOrder(currentIndex: number) {
+  const currentSort = this.productImages[currentIndex].sortOrder;
+  const duplicates = this.productImages.filter((img, i) => img.sortOrder === currentSort && i !== currentIndex);
+  if (duplicates.length > 0) {
+    alert('Sort order must be unique.');
+    this.productImages[currentIndex].sortOrder = this.getNextSortOrder();
   }
+}
+
+setPrimaryImage(index: number) {
+  this.productImages = this.productImages.map((img, i) => ({
+    ...img,
+    isPrimary: i === index
+  }));
+}
+
+
+  // resetForm() {
+  //   this.name = ''; 
+  //   this.description = '';
+  //   this.price = null;
+  //   this.stockQuantity = null;
+  //   this.categoryId = null;
+  // }
+  resetForm() {
+  this.name = '';
+  this.description = '';
+  this.price = null;
+  this.stockQuantity = null;
+  this.categoryId = null;
+  this.productImages = [{ imageUrl: '', sortOrder: 1, isPrimary: true }];
+}
+
   startEdit(product: any) {
     this.editingProductId = product.productId;
     this.name = product.name;
@@ -154,8 +210,8 @@ loadCategories() {
       error: (err) => {
         alert('Error updating product.');
         console.error(err);
-      }
-    });
+        }
+      });
   }
   cancelEdit() {
   this.editingProductId = null;

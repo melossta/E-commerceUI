@@ -27,4 +27,11 @@ export class ProductListComponent implements OnInit {
   viewProduct(productId: number): void {
     this.router.navigate(['/product', productId]);
   }
+getPrimaryImageUrl(images: any[]): string {
+  if (!images || images.length === 0) return '';
+  const primary = images.find(img => img.isPrimary);
+  return primary ? primary.imageUrl : images[0].imageUrl;
+}
+
+
 }

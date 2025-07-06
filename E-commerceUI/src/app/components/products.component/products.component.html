@@ -38,6 +38,36 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <div class="image-section">
+  <h3>Product Images</h3>
+
+  <div class="image-entry" *ngFor="let img of productImages; let i = index">
+    <mat-form-field appearance="fill" class="image-url-field">
+      <mat-label>Image URL</mat-label>
+      <input matInput [(ngModel)]="img.imageUrl" name="imageUrl{{i}}" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="sort-order-field">
+      <mat-label>Sort Order</mat-label>
+      <input matInput type="number" [(ngModel)]="img.sortOrder" name="sortOrder{{i}}" (change)="validateSortOrder(i)" />
+    </mat-form-field>
+
+    <mat-checkbox [(ngModel)]="img.isPrimary" name="isPrimary{{i}}" (change)="setPrimaryImage(i)">
+      Primary
+    </mat-checkbox>
+
+    <button mat-icon-button color="warn" (click)="removeImage(i)" type="button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Static Add Button -->
+  <div class="add-image-button-container">
+    <button mat-stroked-button color="primary" type="button" (click)="addImage()">
+      <mat-icon>add</mat-icon> Add Image
+    </button>
+  </div>
+</div>
 
       <div class="form-buttons">
         <button mat-raised-button color="primary" type="submit">Add Product</button>

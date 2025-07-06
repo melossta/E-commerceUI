@@ -30,6 +30,8 @@ export class ProductDetailComponent implements OnInit {
   orderResult: Order | null = null;
   selectedShippingId: number | null = null;
   isLoading = false;
+  selectedImageUrl: string | null = null;
+
 quantities: { [key: number]: number } = {};
   singleOrder: SingleOrder = {
   productId: null,
@@ -71,6 +73,12 @@ ngOnInit(): void {
 
 
 
+getPrimaryImageUrl(images: any[]): string {
+  if (!images || images.length === 0) return '';
+  const primary = images.find(img => img.isPrimary);
+  return primary ? primary.imageUrl : images[0].imageUrl;
+}
+
 
   loadShippingDetailsByUserId(userId: number): void {
     this.shippingDetailsService.getShippingDetailsByUserId(userId).subscribe({
@@ -84,12 +92,25 @@ ngOnInit(): void {
     });
   }
 
+  // loadProduct(productId: number): void {
+  //   this.productService.getProductById(productId).subscribe({
+  //     next: (product) => this.product = product,
+  //     error: (err) => console.error('Product not found:', err)
+  //   });
+  // }
   loadProduct(productId: number): void {
-    this.productService.getProductById(productId).subscribe({
-      next: (product) => this.product = product,
-      error: (err) => console.error('Product not found:', err)
-    });
-  }
+  this.productService.getProductById(productId).subscribe({
+    next: (product) => {
+      this.product = product;
+
+      if (this.product.productImages?.length > 0) {
+        this.selectedImageUrl = this.getPrimaryImageUrl(this.product.productImages);
+      }
+    },
+    error: (err) => console.error('Product not found:', err)
+  });
+}
+
 
 placeSingleOrder(): void {
   // Assign the selected shipping id from radio group to singleOrder
@@ -124,23 +145,7 @@ resetSingleOrderForm(): void {
     shippingDetailsId: null
   };
 }
-// addToCart(productId: number) {
-//     const quantity = this.quantities[productId];
-//     if (!quantity || quantity <= 0) {
-//       alert('Quantity must be greater than zero.');
-//       return;
-//     }
 
-//     this.shoppingCartService.addToCart(productId, quantity).subscribe({
-//       next: () => {
-//         alert(`Added product ${productId} with quantity ${quantity} to cart.`);
-//       },
-//       error: (err) => {
-//         alert('Error adding product to cart.');
-//         console.error(err);
-//       }
-//     });
-//   }
 addToCart() {
   if (!this.singleOrder.productId) {
     alert('Product ID is missing.');
@@ -166,6 +171,7 @@ addToCart() {
   goToProductList() {
     window.location.href = '/product-list';
   }
+
 
 
 }

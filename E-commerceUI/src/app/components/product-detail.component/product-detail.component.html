@@ -99,8 +99,7 @@
 
 <mat-card *ngIf="product" style="margin: 24px; display: flex; flex-direction: row; gap: 24px; align-items: flex-start;">
 
-  <!-- Left side: Product Image -->
-  <div style="flex: 0 0 300px; max-width: 300px;">
+  <!-- <div style="flex: 0 0 300px; max-width: 300px;">
     <img
       *ngIf="product.imageUrl; else noImage"
       [src]="product.imageUrl"
@@ -112,7 +111,43 @@
         No Image Available
       </div>
     </ng-template>
-  </div>
+  </div> -->
+
+  <!-- Left side: Product Images -->
+<div style="flex: 0 0 500px; max-width: 500px;">
+  <ng-container *ngIf="product.productImages && product.productImages.length > 0; else noImage">
+
+    <!-- Display the selected image -->
+    <!-- Main image container with fixed height and non-moving layout -->
+<div style="width: 100%; height: 400px; position: relative; background-color: #f9f9f9; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+  <img
+    [src]="selectedImageUrl || getPrimaryImageUrl(product.productImages)"
+    alt="{{ product.name }}"
+    style="max-width: 100%; max-height: 100%; object-fit: contain;"
+  />
+</div>
+
+
+    <!-- Thumbnails -->
+    <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px;">
+      <img
+        *ngFor="let img of product.productImages"
+        [src]="img.imageUrl"
+        style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 2px solid transparent; cursor: pointer;"
+        [style.border-color]="selectedImageUrl === img.imageUrl ? '#4e54c8' : 'transparent'"
+        (click)="selectedImageUrl = img.imageUrl"
+        [alt]="product.name"
+      />
+    </div>
+
+  </ng-container>
+
+  <ng-template #noImage>
+    <div style="width: 100%; height: 300px; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999; font-style: italic;">
+      No Image Available
+    </div>
+  </ng-template>
+</div>
 
   <!-- Right side: Product Details and Order Controls -->
   <div style="flex: 1; display: flex; flex-direction: column;">
